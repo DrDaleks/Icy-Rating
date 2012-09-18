@@ -71,7 +71,6 @@ public class RatingButton extends JButton implements ActionListener, WindowFocus
         
         if (tic - nanoClock > nanoClockThreshold)
         {
-            System.out.println(tic-nanoClock);
             Point p = getLocationOnScreen();
             dialog.setLocation(p.x + getWidth() / 2 - dialog.getWidth() / 2, p.y + getHeight());
             dialog.setVisible(true);
