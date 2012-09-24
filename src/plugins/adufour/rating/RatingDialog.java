@@ -1,8 +1,6 @@
 package plugins.adufour.rating;
 
-import icy.image.ImageUtil;
 import icy.plugin.PluginDescriptor;
-import icy.resource.ResourceUtil;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -13,7 +11,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
@@ -24,8 +21,6 @@ import java.awt.geom.Point2D;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,7 +29,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicButtonUI;
 
 import plugins.adufour.vars.lang.VarInteger;
 import plugins.adufour.vars.util.VarListener;
@@ -45,8 +39,6 @@ import com.sun.awt.AWTUtilities;
 public class RatingDialog extends JDialog implements WindowFocusListener
 {
     private static final String  DEFAULT_COMMENT = "Enter your comment here...";
-    
-    private static final Image   starIcon        = ImageUtil.scaleQuality(ResourceUtil.ICON_STAR, 20, 20);
     
     private static final Color[] ratingColorCode = { Color.black, Color.red, Color.orange, Color.yellow, new Color(173, 255, 47), Color.green };
     
@@ -137,21 +129,13 @@ public class RatingDialog extends JDialog implements WindowFocusListener
         rate.setOpaque(false);
         rate.setLayout(new GridLayout(1, 5, 0, 0));
         
-        final JButton[] stars = new JButton[5];
-        final ImageIcon[] starIcons = new ImageIcon[6];
-        for (int i = 0; i < starIcons.length; i++)
-            starIcons[i] = new ImageIcon(ImageUtil.getColorImageFromAlphaImage(starIcon, ratingColorCode[i]));
+        final StarButton[] stars = new StarButton[5];
         
         for (int i = 0; i < 5; i++)
         {
             final int index = i;
-            JButton star = new JButton(starIcons[rating.getValue()]);
-            // replace the UI by a default one to remove gaps between buttons
-            star.setUI(new BasicButtonUI());
-            star.setBorder(new EmptyBorder(0, 0, 0, 0));
+            StarButton star = new StarButton(getRatingColor(), getRatingColor());
             star.setPreferredSize(new Dimension(24, 24));
-            star.setContentAreaFilled(false);
-            star.setFocusable(false);
             star.addMouseListener(new MouseAdapter()
             {
                 @Override
@@ -159,11 +143,11 @@ public class RatingDialog extends JDialog implements WindowFocusListener
                 {
                     for (int j = 0; j <= index; j++)
                     {
-                        stars[j].setIcon(starIcons[index + 1]);
+                        stars[j].setStarColor(ratingColorCode[index + 1], ratingColorCode[index + 1]);
                     }
                     for (int j = index + 1; j < 5; j++)
                     {
-                        stars[j].setIcon(starIcons[0]);
+                        stars[j].setStarColor(ratingColorCode[0], ratingColorCode[0]);
                     }
                 }
                 
@@ -174,11 +158,11 @@ public class RatingDialog extends JDialog implements WindowFocusListener
                     
                     for (int j = 0; j < currentRating; j++)
                     {
-                        stars[j].setIcon(starIcons[currentRating]);
+                        stars[j].setStarFillColor(getRatingColor());
                     }
                     for (int j = currentRating; j < 5; j++)
                     {
-                        stars[j].setIcon(starIcons[0]);
+                        stars[j].setStarColor(ratingColorCode[0], ratingColorCode[0]);
                     }
                 }
                 
@@ -225,7 +209,7 @@ public class RatingDialog extends JDialog implements WindowFocusListener
                 {
                     text.setText("");
                     text.removeMouseListener(this);
-                    super.mouseClicked(e);
+                    //super.mouseClicked(e);
                 }
             });
         }
